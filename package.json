@@ -113,6 +113,6 @@
 		"test-macos-x64": "pnpm run pretest && cd lib && node modules/build macos-x64",
 		"test-windows-arm64": "pnpm run pretest && cd lib && node modules/build windows-arm64",
 		"test-linux-arm64": "pnpm run pretest && cd lib && node modules/build linuxstatic-arm64 && node modules/build alpine-x64",
-		"test-macos-arm64": "pnpm run pretest && cd lib && node modules/build macos-arm64",
+		"test-macos-arm64": "pnpm run pretest && cd lib && node modules/build macos-arm64"
 	}
 }
