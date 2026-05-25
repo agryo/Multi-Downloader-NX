@@ -59,8 +59,6 @@
 		"yaml": "^2.8.3"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^20.5.0",
-		"@commitlint/config-conventional": "^20.5.0",
 		"@eslint/js": "^9.39.4",
 		"@types/express": "^5.0.6",
 		"@types/m3u8-parser": "^7.2.6",
@@ -72,7 +70,6 @@
 		"esbuild": "0.26.0",
 		"eslint": "^9.39.4",
 		"eslint-config-prettier": "^10.1.8",
-		"husky": "^9.1.7",
 		"jiti": "^2.6.1",
 		"prettier": "^3.8.1",
 		"removeNPMAbsolutePaths": "^3.0.1",
@@ -117,6 +114,5 @@
 		"test-windows-arm64": "pnpm run pretest && cd lib && node modules/build windows-arm64",
 		"test-linux-arm64": "pnpm run pretest && cd lib && node modules/build linuxstatic-arm64 && node modules/build alpine-x64",
 		"test-macos-arm64": "pnpm run pretest && cd lib && node modules/build macos-arm64",
-		"prepare": "husky"
 	}
 }
