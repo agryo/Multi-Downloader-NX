@@ -13,13 +13,13 @@ dlVideoOnce: false
 # Whether to keep all downloaded videos or only a single copy
 keepAllVideos: false
 # What to use as the file name template
-fileName: '[${service}] ${showTitle} - S${season}E${episode} [${height}p]'
+fileName: '${showTitle}.S${season}E${episode}.${title}.${height}p.${service}.WEB-DL.AUDIO.CODEC-S74Ll10n'
 # What Audio languages to download
-dubLang: ['jpn']
+dubLang: ['por', 'jpn']
 # What Subtitle languages to download
-dlsubs: ['all']
+dlsubs: ['pt-BR', 'en', 'es-419', 'es-ES', 'fr', 'de', 'it']
 # What language Audio to set as default
-defaultAudio: 'jpn'
+defaultAudio: 'por'
 # Video Playback Endpoint (Crunchyroll)
 vstream: 'androidtv'
 # Audio Playback Endpoint (Crunchyroll)
