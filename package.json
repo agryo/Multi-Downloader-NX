@@ -55,7 +55,7 @@
 		"open": "^11.0.0",
 		"undici": "^7.24.6",
 		"widevine": "^1.0.6",
-		"ws": "^8.21.1",
+		"ws": "^8.21.0",
 		"yaml": "^2.8.3"
 	},
 	"devDependencies": {
@@ -79,7 +79,7 @@
 	},
 	"scripts": {
 		"prestart": "pnpm run tsc test",
-		"start": "pnpm prestart && cd lib && node gui.js",
+		"start": "pnpm run tsc && cd lib && node gui.js",
 		"gui": "cd ./gui/react/ && pnpm start",
 		"docs": "ts-node modules/build-docs.ts",
 		"tsc": "ts-node tsc.ts",

@@ -1,4 +1,4 @@
-ffmpeg: '/ffmpeg.exe'
-mkvmerge: '/mkvmerge.exe'
-mp4decrypt: '/mp4decrypt.exe'
-shaka: '/shaka-packager.exe'
+ffmpeg: '../../BinTools/ffmpeg.exe'
+mkvmerge: '../../BinTools/mkvmerge.exe'
+mp4decrypt: '../../BinTools/mp4decrypt.exe'
+shaka: '../../BinTools/shaka-packager.exe'

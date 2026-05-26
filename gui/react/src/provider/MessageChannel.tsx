@@ -9,6 +9,8 @@ import { useSnackbar } from 'notistack';
 import { LockOutlined, PowerSettingsNew } from '@mui/icons-material';
 import { GUIConfig } from '../../../../modules/module.cfg-loader';
 
+type FCWithChildren = React.FC<{ children: React.ReactNode }>;
+
 export type FrontEndMessages = MessageHandler & { randomEvents: RandomEventHandler; logout: () => Promise<boolean> };
 
 export class RandomEventHandler {
@@ -74,7 +76,7 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 			setPublicWS(wss);
 		});
 		wss.addEventListener('error', () => {
-			enqueueSnackbar('Unable to connect to server. Please reload the page to try again.', { variant: 'error' });
+			enqueueSnackbar('Não foi possível conectar ao servidor. Por favor, recarregue a página para tentar novamente.', { variant: 'error' });
 		});
 	}, []);
 
@@ -93,7 +95,7 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 			const formData = new FormData(ev.currentTarget);
 			const password = formData.get('password')?.toString();
 			if (!password)
-				return enqueueSnackbar('Please provide both a username and password', {
+				return enqueueSnackbar('Por favor, forneça a senha de acesso.', {
 					variant: 'error'
 				});
 			search = new URLSearchParams({
@@ -110,7 +112,7 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 		});
 		wws.addEventListener('error', (er) => {
 			console.error('[ERROR] [WS]', er);
-			enqueueSnackbar('Unable to connect to server. Please check the password and try again.', {
+			enqueueSnackbar('Não foi possível conectar ao servidor. Verifique a senha e tente novamente.', {
 				variant: 'error'
 			});
 		});
@@ -118,7 +120,7 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 
 	const setup = async (ev: React.FormEvent<HTMLFormElement>) => {
 		ev.preventDefault();
-		if (!socket) return enqueueSnackbar('Invalid state: socket not found', { variant: 'error' });
+		if (!socket) return enqueueSnackbar('Estado inválido: socket não encontrado', { variant: 'error' });
 		const formData = new FormData(ev.currentTarget);
 		const password = formData.get('password');
 		const data = {
@@ -126,11 +128,11 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 			password: password ? password.toString() : undefined
 		} as GUIConfig;
 		await messageAndResponse(socket, { name: 'setupServer', data });
-		enqueueSnackbar(`The following settings have been set: Port=${data.port}, Password=${data.password ?? 'noPasswordRequired'}`, {
+		enqueueSnackbar(`As seguintes configurações foram definidas: Porta=${data.port}, Senha=${data.password ?? 'Sem Senha Requerida'}`, {
 			variant: 'success',
 			persist: true
 		});
-		enqueueSnackbar('Please restart the server now.', {
+		enqueueSnackbar('Por favor, reinicie o servidor agora.', {
 			variant: 'info',
 			persist: true
 		});
@@ -142,7 +144,10 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 		(async () => {
 			if (!socket) return;
 			const currentService = await messageAndResponse(socket, { name: 'type', data: undefined });
-			if (currentService.data !== undefined) return dispatch({ type: 'service', payload: currentService.data });
+			if (currentService.data !== undefined) {
+				dispatch({ type: 'service', payload: currentService.data });
+				return;
+			}
 			if (store.service !== currentService.data) messageAndResponse(socket, { name: 'setup', data: store.service });
 		})();
 	}, [store.service, dispatch, socket]);
@@ -173,15 +178,15 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 					<LockOutlined />
 				</Avatar>
 				<Typography component="h1" variant="h5" color="text.primary">
-					Login
+					Acesso
 				</Typography>
 				<Box component="form" onSubmit={connect} sx={{ mt: 1 }}>
-					<TextField name="password" margin="normal" type="password" fullWidth variant="filled" required label={'Password'} />
+					<TextField name="password" margin="normal" type="password" fullWidth variant="filled" required label={'Senha de Acesso'} />
 					<Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} fullWidth>
-						Login
+						Entrar
 					</Button>
 					<Typography color="text.secondary" align="center" component="p" variant="body2">
-						You need to login in order to use this tool.
+						É necessário realizar o acesso para utilizar o downloader.
 					</Typography>
 				</Box>
 			</Box>
@@ -195,18 +200,18 @@ const MessageChannelProvider: FCWithChildren = ({ children }) => {
 					<PowerSettingsNew />
 				</Avatar>
 				<Typography component="h1" variant="h5" color="text.primary">
-					Confirm
+					Configuração Inicial
 				</Typography>
 				<Box component="form" onSubmit={setup} sx={{ mt: 1 }}>
-					<TextField name="port" margin="normal" type="number" fullWidth variant="filled" required label={'Port'} defaultValue={3000} />
-					<TextField name="password" margin="normal" type="password" fullWidth variant="filled" label={'Password'} />
+					<TextField name="port" margin="normal" type="number" fullWidth variant="filled" required label={'Porta'} defaultValue={3000} />
+					<TextField name="password" margin="normal" type="password" fullWidth variant="filled" label={'Senha'} />
 					<Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }} fullWidth>
-						Confirm
+						Confirmar
 					</Button>
 					<Typography color="text.secondary" align="center" component="p" variant="body2">
-						Please enter data that will be set to use this tool.
+						Por favor, insira os dados que serão configurados para usar esta ferramenta.
 						<br />
-						Leave blank to use no password (NOT RECOMMENDED)!
+						Deixe em branco para não utilizar senha (NÃO RECOMENDADO)!
 					</Typography>
 				</Box>
 			</Box>

@@ -5,6 +5,8 @@ import { StoreState } from './Store';
 
 type Services = 'crunchy' | 'hidive' | 'adn';
 
+type FCWithChildren = React.FC<{ children: React.ReactNode }>;
+
 export const serviceContext = React.createContext<Services | undefined>(undefined);
 
 const ServiceProvider: FCWithChildren = ({ children }) => {
@@ -20,7 +22,7 @@ const ServiceProvider: FCWithChildren = ({ children }) => {
 	return service === undefined ? (
 		<Box sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column', position: 'relative', top: '40vh' }}>
 			<Typography color="text.primary" variant="h3" sx={{ textAlign: 'center', mb: 5 }}>
-				Please select your service
+				Por favor, selecione o seu serviço
 			</Typography>
 			<Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
 				<Button

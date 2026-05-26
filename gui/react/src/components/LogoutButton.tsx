@@ -10,19 +10,19 @@ const LogoutButton: React.FC = () => {
 	const [, dispatch] = useStore();
 
 	const logout = async () => {
-		if (await messageChannel?.isDownloading()) return alert('You are currently downloading. Please finish the download first.');
+		if (await messageChannel?.isDownloading()) return alert('Você está realizando um download no momento. Por favor, aguarde o término primeiro.');
 		if (await messageChannel?.logout())
 			dispatch({
 				type: 'service',
 				payload: undefined
 			});
-		else alert('Unable to change service');
+		else alert('Não foi possível alterar o serviço');
 	};
 
 	return (
 		<Require value={messageChannel}>
 			<Button startIcon={<ExitToApp />} variant="contained" onClick={logout} sx={{ maxHeight: '2.3rem' }}>
-				Service select
+				Trocar Serviço
 			</Button>
 		</Require>
 	);

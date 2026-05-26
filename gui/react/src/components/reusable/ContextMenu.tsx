@@ -63,7 +63,7 @@ function ContextMenu<T extends HTMLElement>(props: ContextMenuProps<T>) {
 				})}
 				<Divider />
 				<Button fullWidth color="inherit" onClick={() => setShow(false)} sx={buttonSx}>
-					Close
+					Fechar
 				</Button>
 			</List>
 		</Box>

@@ -11,13 +11,13 @@ const StartQueueButton: React.FC = () => {
 
 	React.useEffect(() => {
 		(async () => {
-			if (!msg) return alert('Invalid state: msg not found');
+			if (!msg) return alert('Estado inválido: canal de mensagem não encontrado');
 			setStart(await msg.getDownloadQueue());
 		})();
 	}, []);
 
 	const change = async () => {
-		if (await messageChannel?.isDownloading()) alert('The current download will be finished before the queue stops');
+		if (await messageChannel?.isDownloading()) alert('O download atual será concluído antes que a fila pare');
 		msg?.setDownloadQueue(!start);
 		setStart(!start);
 	};
@@ -25,7 +25,7 @@ const StartQueueButton: React.FC = () => {
 	return (
 		<Require value={messageChannel}>
 			<Button startIcon={start ? <PauseCircleFilled /> : <PlayCircleFilled />} variant="contained" onClick={change} sx={{ maxHeight: '2.3rem' }}>
-				{start ? 'Stop Queue' : 'Start Queue'}
+				{start ? 'Parar Fila' : 'Iniciar Fila'}
 			</Button>
 		</Require>
 	);

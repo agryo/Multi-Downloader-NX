@@ -41,7 +41,7 @@ const AuthButton: React.FC = () => {
 		const res = await messageChannel.auth({ username, password });
 		if (res.isOk) {
 			setOpen(false);
-			snackbar.enqueueSnackbar('Logged in', {
+			snackbar.enqueueSnackbar('Login realizado com sucesso', {
 				variant: 'success'
 			});
 			setUsername('');
@@ -57,28 +57,28 @@ const AuthButton: React.FC = () => {
 		<Require value={messageChannel}>
 			<Dialog open={open}>
 				<Dialog open={!!error}>
-					<DialogTitle>Error during Authentication</DialogTitle>
+					<DialogTitle>Erro durante a Autenticação</DialogTitle>
 					<DialogContentText>
 						{error?.name}
 						{error?.message}
 					</DialogContentText>
 					<DialogActions>
-						<Button onClick={() => setError(undefined)}>Close</Button>
+						<Button onClick={() => setError(undefined)}>Fechar</Button>
 					</DialogActions>
 				</Dialog>
-				<DialogTitle sx={{ flexGrow: 1 }}>Authentication</DialogTitle>
+				<DialogTitle sx={{ flexGrow: 1 }}>Autenticação</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Here, you need to enter your username (most likely your Email) and your password.
+						Aqui, você precisa inserir seu nome de usuário (provavelmente seu e-mail) e sua senha.
 						<br />
-						These information are not stored anywhere and are only used to authenticate with the service once.
+						Essas informações não são armazenadas em nenhum lugar e são usadas apenas para autenticação única no serviço.
 					</DialogContentText>
 					<TextField
 						error={usernameError}
-						helperText={usernameError ? 'Please enter something before submiting' : undefined}
+						helperText={usernameError ? 'Por favor, insira o usuário' : undefined}
 						margin="dense"
 						id="username"
-						label="Username"
+						label="Usuário / E-mail"
 						type="text"
 						fullWidth
 						variant="standard"
@@ -88,10 +88,10 @@ const AuthButton: React.FC = () => {
 					/>
 					<TextField
 						error={passwordError}
-						helperText={passwordError ? 'Please enter something before submiting' : undefined}
+						helperText={passwordError ? 'Por favor, insira a senha' : undefined}
 						margin="dense"
 						id="password"
-						label="Password"
+						label="Senha"
 						type="password"
 						fullWidth
 						variant="standard"
@@ -103,15 +103,15 @@ const AuthButton: React.FC = () => {
 				<DialogActions>
 					{loading && <CircularProgress size={30} />}
 					<Button disabled={loading} onClick={() => setOpen(false)}>
-						Close
+						Fechar
 					</Button>
 					<Button disabled={loading} onClick={() => handleSubmit()}>
-						Authenticate
+						Autenticar
 					</Button>
 				</DialogActions>
 			</Dialog>
 			<Button startIcon={authed ? <Check /> : <Close />} variant="contained" onClick={() => setOpen(true)}>
-				Authenticate
+				Autenticar
 			</Button>
 		</Require>
 	);

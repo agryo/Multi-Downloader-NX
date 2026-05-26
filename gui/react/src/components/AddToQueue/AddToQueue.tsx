@@ -20,7 +20,7 @@ const AddToQueue: React.FC = () => {
 			</Dialog>
 			<Button variant="contained" onClick={() => setOpen(true)} sx={{ maxHeight: '2.3rem' }}>
 				<Add />
-				Add to Queue
+				Adicionar à Fila
 			</Button>
 		</Box>
 	);

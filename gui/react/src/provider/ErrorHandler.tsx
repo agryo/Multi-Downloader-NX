@@ -24,6 +24,9 @@ export default class ErrorHandler extends React.Component<
 	render(): React.ReactNode {
 		return this.state.error ? (
 			<Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', p: 2 }}>
+				<Typography variant="h5" color="error" sx={{ mb: 2 }}>
+					Ocorreu um erro inesperado
+				</Typography>
 				<Typography variant="body1" color="red">
 					{`${this.state.error.er.name}: ${this.state.error.er.message}`}
 					<br />

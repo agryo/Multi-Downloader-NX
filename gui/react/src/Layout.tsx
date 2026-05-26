@@ -29,10 +29,10 @@ const Layout: React.FC = () => {
 				<LogoutButton />
 				<AuthButton />
 				<Button variant="contained" startIcon={<Folder />} onClick={() => messageHandler?.openFolder('content')} sx={{ height: '37px' }}>
-					Open Output Directory
+					Abrir Pasta de Destino
 				</Button>
 				<Button variant="contained" startIcon={<ClearAll />} onClick={() => messageHandler?.clearQueue()} sx={{ height: '37px' }}>
-					Clear Queue
+					Limpar Fila
 				</Button>
 				<AddToQueue />
 				<StartQueueButton />

@@ -48,8 +48,8 @@ const MenuBar: React.FC = () => {
 	return (
 		<Box sx={{ display: 'flex', marginBottom: '1rem', width: '100%', alignItems: 'center' }}>
 			<Box sx={{ position: 'relative', left: '0%', width: '50%' }}>
-				<Button onClick={(e) => handleClick(e, 'settings')}>Settings</Button>
-				<Button onClick={(e) => handleClick(e, 'help')}>Help</Button>
+				<Button onClick={(e) => handleClick(e, 'settings')}>Configurações</Button>
+				<Button onClick={(e) => handleClick(e, 'help')}>Ajuda</Button>
 			</Box>
 			<Menu open={openMenu === 'settings'} anchorEl={anchorEl} onClose={handleClose}>
 				<MenuItem
@@ -58,7 +58,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Open settings folder
+					Abra a Pasta de Configurações
 				</MenuItem>
 				<MenuItem
 					onClick={() => {
@@ -66,7 +66,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Open FFmpeg/Mkvmerge file
+					Abra o Arquivo FFmpeg/Mkvmerge.
 				</MenuItem>
 				<MenuItem
 					onClick={() => {
@@ -74,7 +74,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Open advanced options
+					Abra as Opções Avançadas
 				</MenuItem>
 				<MenuItem
 					onClick={() => {
@@ -82,7 +82,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Open output path
+					Abrir Caminho de Saída
 				</MenuItem>
 			</Menu>
 			<Menu open={openMenu === 'help'} anchorEl={anchorEl} onClose={handleClose}>
@@ -100,7 +100,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Report a bug
+					Reportar um bug
 				</MenuItem>
 				<MenuItem
 					onClick={() => {
@@ -108,7 +108,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Contributors
+					Contribuidores
 				</MenuItem>
 				<MenuItem
 					onClick={() => {
@@ -123,7 +123,7 @@ const MenuBar: React.FC = () => {
 						handleClose();
 					}}
 				>
-					Version: {store.version}
+					Versão: {store.version}
 				</MenuItem>
 			</Menu>
 			<Typography variant="h5" color="text.primary">

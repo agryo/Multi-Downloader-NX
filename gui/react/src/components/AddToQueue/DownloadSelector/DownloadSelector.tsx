@@ -22,36 +22,42 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 	const ITEM_PADDING_TOP = 8;
 
 	React.useEffect(() => {
-		(async () => {
-			/* If we don't wait the response is undefined? */
-			await new Promise((resolve) => setTimeout(() => resolve(undefined), 100));
-			const dubLang = messageHandler?.handleDefault('dubLang');
-			const subLang = messageHandler?.handleDefault('dlsubs');
-			const q = messageHandler?.handleDefault('q');
-			const fileName = messageHandler?.handleDefault('fileName');
-			const dlVideoOnce = messageHandler?.handleDefault('dlVideoOnce');
-			const result = await Promise.all([dubLang, subLang, q, fileName, dlVideoOnce]);
-			dispatch({
-				type: 'downloadOptions',
-				payload: {
-					...store.downloadOptions,
-					dubLang: result[0],
-					dlsubs: result[1],
-					q: result[2],
-					fileName: result[3],
-					dlVideoOnce: result[4]
-				}
-			});
-			setAvailableDubs((await messageHandler?.availableDubCodes()) ?? []);
-			setAvailableSubs((await messageHandler?.availableSubCodes()) ?? []);
-		})();
-	}, []);
+		if (messageHandler) {
+			(async () => {
+				// Primeiro, carregamos os idiomas disponíveis para o serviço
+				const [dubs, subs] = await Promise.all([messageHandler.availableDubCodes(), messageHandler.availableSubCodes()]);
+				setAvailableDubs(dubs ?? []);
+				setAvailableSubs(subs ?? []);
+
+				// Depois, buscamos os padrões do cli-defaults.yml
+				const result = await Promise.all([
+					messageHandler.handleDefault('dubLang'),
+					messageHandler.handleDefault('dlsubs'),
+					messageHandler.handleDefault('q'),
+					messageHandler.handleDefault('fileName'),
+					messageHandler.handleDefault('dlVideoOnce')
+				]);
+
+				dispatch({
+					type: 'downloadOptions',
+					payload: {
+						...store.downloadOptions,
+						dubLang: Array.isArray(result[0]) ? result[0] : [],
+						dlsubs: Array.isArray(result[1]) ? result[1] : [],
+						q: result[2] ?? 0,
+						fileName: result[3] ?? '',
+						dlVideoOnce: !!result[4]
+					}
+				});
+			})();
+		}
+	}, [messageHandler]);
 
 	const addToQueue = async () => {
 		setLoading(true);
 		const res = await messageHandler?.resolveItems(store.downloadOptions);
 		if (!res)
-			return enqueueSnackbar('The request failed. Please check if the ID is correct.', {
+			return enqueueSnackbar('A requisição falhou. Por favor, verifique se o ID está correto.', {
 				variant: 'error'
 			});
 		setLoading(false);
@@ -60,7 +66,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 
 	const listEpisodes = async () => {
 		if (!store.downloadOptions.id) {
-			return enqueueSnackbar('Please enter a ID', {
+			return enqueueSnackbar('Por favor, insira um ID', {
 				variant: 'error'
 			});
 		}
@@ -68,7 +74,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 		const res = await messageHandler?.listEpisodes(store.downloadOptions.id);
 		if (!res || !res.isOk) {
 			setLoading(false);
-			return enqueueSnackbar('The request failed. Please check if the ID is correct.', {
+			return enqueueSnackbar('A requisição falhou. Por favor, verifique se o ID está correto.', {
 				variant: 'error'
 			});
 		} else {
@@ -102,9 +108,9 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 							//backgroundColor: '#ff000030'
 						}}
 					>
-						<Typography sx={{ fontSize: '1.4rem' }}>General Options</Typography>
+						<Typography sx={{ fontSize: '1.4rem' }}>Configurações Gerais</Typography>
 						<TextField
-							value={store.downloadOptions.id}
+							value={store.downloadOptions.id ?? ''}
 							required
 							onChange={(e) => {
 								dispatch({
@@ -112,11 +118,11 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 									payload: { ...store.downloadOptions, id: e.target.value }
 								});
 							}}
-							label="Show ID"
+							label="ID da Obra"
 						/>
 						<TextField
 							type="number"
-							value={store.downloadOptions.q}
+							value={store.downloadOptions.q ?? 0}
 							required
 							onChange={(e) => {
 								const parsed = parseInt(e.target.value);
@@ -126,7 +132,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 									payload: { ...store.downloadOptions, q: parsed }
 								});
 							}}
-							label="Quality Level (0 for max)"
+							label="Qualidade (0 para máx)"
 						/>
 						<Box sx={{ display: 'flex', gap: '5px' }}>
 							<Button
@@ -134,14 +140,14 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 								onClick={() => dispatch({ type: 'downloadOptions', payload: { ...store.downloadOptions, noaudio: !store.downloadOptions.noaudio } })}
 								variant={store.downloadOptions.noaudio ? 'contained' : 'outlined'}
 							>
-								Skip Audio
+								Pular Áudio
 							</Button>
 							<Button
 								sx={{ textTransform: 'none' }}
 								onClick={() => dispatch({ type: 'downloadOptions', payload: { ...store.downloadOptions, novids: !store.downloadOptions.novids } })}
 								variant={store.downloadOptions.novids ? 'contained' : 'outlined'}
 							>
-								Skip Video
+								Pular Vídeo
 							</Button>
 						</Box>
 						<Button
@@ -149,9 +155,9 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 							onClick={() => dispatch({ type: 'downloadOptions', payload: { ...store.downloadOptions, dlVideoOnce: !store.downloadOptions.dlVideoOnce } })}
 							variant={store.downloadOptions.dlVideoOnce ? 'contained' : 'outlined'}
 						>
-							Skip Unnecessary
+							Pular Desnecessários
 						</Button>
-						<Tooltip title={store.service == 'hidive' ? '' : <Typography>Simulcast is only supported on Hidive</Typography>} arrow placement="top">
+						<Tooltip title={store.service == 'hidive' ? '' : <Typography>Simulcast é suportado apenas no Hidive</Typography>} arrow placement="top">
 							<Box>
 								<Button
 									sx={{ textTransform: 'none' }}
@@ -159,7 +165,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 									onClick={() => dispatch({ type: 'downloadOptions', payload: { ...store.downloadOptions, simul: !store.downloadOptions.simul } })}
 									variant={store.downloadOptions.simul ? 'contained' : 'outlined'}
 								>
-									Download Simulcast ver.
+									Baixar ver. Simulcast
 								</Button>
 							</Box>
 						</Tooltip>
@@ -173,7 +179,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 							//backgroundColor: '#00000020'
 						}}
 					>
-						<Typography sx={{ fontSize: '1.4rem' }}>Episode Options</Typography>
+						<Typography sx={{ fontSize: '1.4rem' }}>Opções de Episódio</Typography>
 						<Box
 							sx={{
 								display: 'flex',
@@ -202,7 +208,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 										flex: 1
 									}}
 									disabled={store.downloadOptions.all}
-									value={store.downloadOptions.e}
+									value={store.downloadOptions.e ?? ''}
 									required
 									onChange={(e) => {
 										dispatch({
@@ -210,7 +216,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 											payload: { ...store.downloadOptions, e: e.target.value }
 										});
 									}}
-									placeholder="Episode Select"
+									placeholder="Ex: 1-5, 8, S1"
 								/>
 								<Divider orientation="vertical" />
 								<LoadingButton
@@ -223,10 +229,10 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 									variant="text"
 									sx={{ textTransform: 'none' }}
 								>
-									<Typography>
-										List
+									<Typography sx={{ fontWeight: 'bold' }}>
+										Listar
 										<br />
-										Episodes
+										Episódios
 									</Typography>
 								</LoadingButton>
 							</Box>
@@ -236,14 +242,14 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 							onClick={() => dispatch({ type: 'downloadOptions', payload: { ...store.downloadOptions, all: !store.downloadOptions.all } })}
 							variant={store.downloadOptions.all ? 'contained' : 'outlined'}
 						>
-							Download All
+							Baixar Tudo
 						</Button>
 						<Button
 							sx={{ textTransform: 'none' }}
 							onClick={() => dispatch({ type: 'downloadOptions', payload: { ...store.downloadOptions, but: !store.downloadOptions.but } })}
 							variant={store.downloadOptions.but ? 'contained' : 'outlined'}
 						>
-							Download All but
+							Baixar Tudo, exceto
 						</Button>
 					</Box>
 					<Box
@@ -255,9 +261,9 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 							//backgroundColor: '#00ff0020'
 						}}
 					>
-						<Typography sx={{ fontSize: '1.4rem' }}>Language Options</Typography>
+						<Typography sx={{ fontSize: '1.4rem' }}>Opções de Idioma</Typography>
 						<MultiSelect
-							title="Dub Languages"
+							title="Idiomas de Áudio"
 							values={availableDubs}
 							selected={store.downloadOptions.dubLang}
 							onChange={(e) => {
@@ -270,7 +276,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 						/>
 
 						<MultiSelect
-							title="Sub Languages"
+							title="Idiomas de Legenda"
 							values={availableSubs}
 							selected={store.downloadOptions.dlsubs}
 							onChange={(e) => {
@@ -280,7 +286,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 								});
 							}}
 						/>
-						<Tooltip title={store.service == 'crunchy' ? '' : <Typography>Hardsubs are only supported on Crunchyroll</Typography>} arrow placement="top">
+						<Tooltip title={store.service == 'crunchy' ? '' : <Typography>Hardsubs são suportados apenas na Crunchyroll</Typography>} arrow placement="top">
 							<Box
 								sx={{
 									display: 'flex',
@@ -300,7 +306,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 									}}
 								>
 									<FormControl fullWidth>
-										<InputLabel id="hsLabel">Hardsub Language</InputLabel>
+										<InputLabel id="hsLabel">Idioma do Hardsub</InputLabel>
 										<Select
 											MenuProps={{
 												PaperProps: {
@@ -311,9 +317,9 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 												}
 											}}
 											labelId="hsLabel"
-											label="Hardsub Language"
+											label="Legenda Fixa (Hardsub)"
 											disabled={store.service != 'crunchy'}
-											value={store.downloadOptions.hslang}
+											value={store.downloadOptions.hslang ?? ''}
 											onChange={(e) => {
 												dispatch({
 													type: 'downloadOptions',
@@ -321,7 +327,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 												});
 											}}
 										>
-											<MenuItem value="">No Hardsub</MenuItem>
+											<MenuItem value="">Sem Hardsub</MenuItem>
 											{availableSubs.map((lang) => {
 												if (lang === 'all' || lang === 'none') return undefined;
 												return <MenuItem value={lang}>{lang}</MenuItem>;
@@ -333,11 +339,11 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 								<Tooltip
 									title={
 										<Typography>
-											Downloads the hardsub version of the selected subtitle.
+											Baixa a versão com legenda "queimada" no vídeo.
 											<br />
-											Subtitles are displayed <b>PERMANENTLY!</b>
+											As legendas ficam visíveis <b>PERMANENTEMENTE!</b>
 											<br />
-											You can choose only <b>1</b> subtitle per video!
+											Você pode escolher apenas <b>1</b> idioma por vídeo!
 										</Typography>
 									}
 									arrow
@@ -369,7 +375,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 					}}
 				>
 					<TextField
-						value={store.downloadOptions.fileName}
+						value={store.downloadOptions.fileName ?? ''}
 						onChange={(e) => {
 							dispatch({
 								type: 'downloadOptions',
@@ -377,9 +383,9 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 							});
 						}}
 						sx={{ width: '87%' }}
-						label="Filename Overwrite"
+						label="Sobrescrever Nome do Arquivo"
 					/>
-					<Tooltip title={<Typography>Click here to see the documentation</Typography>} arrow placement="top">
+					<Tooltip title={<Typography>Clique aqui para ver a documentação</Typography>} arrow placement="top">
 						<Link href="https://github.com/anidl/multi-downloader-nx/blob/master/docs/DOCUMENTATION.md#filename-template" rel="noopener noreferrer" target="_blank">
 							<InfoOutlinedIcon
 								sx={{
@@ -396,7 +402,7 @@ const DownloadSelector: React.FC<DownloadSelectorProps> = ({ onFinish }) => {
 			<Box sx={{ width: '95%', height: '0.3rem', backgroundColor: '#ffffff50', borderRadius: '10px', marginTop: '10px' }} />
 
 			<LoadingButton sx={{ margin: '15px', textTransform: 'none' }} loading={loading} onClick={addToQueue} variant="contained">
-				Add to Queue
+				Adicionar à Fila
 			</LoadingButton>
 		</Box>
 	);
