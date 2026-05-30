@@ -97,6 +97,7 @@ export let argvC: {
 	originalScriptFix: boolean;
 	subtitleTimestampFix: boolean;
 	// Proxy
+	releaseTag: string;
 	proxy: string;
 	proxyAll: boolean;
 };

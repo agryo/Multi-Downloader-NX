@@ -39,8 +39,11 @@ const parseFileName = (input: string, variables: Variable[], numbers: number, ov
 			const replaceStr = len < numbers ? '0'.repeat(numbers - len) + use.replaceWith : use.replaceWith + '';
 			input = input.replace(type, replaceStr);
 		} else {
-			if (use.sanitize) use.replaceWith = Helper.cleanupFilename(use.replaceWith);
-			input = input.replace(type, use.replaceWith);
+			let replaceWith = use.replaceWith;
+			if (use.sanitize) replaceWith = Helper.cleanupFilename(replaceWith);
+			// Remove colons and replace spaces with dots for "Scene" style naming
+			const formattedValue = replaceWith.replace(/[：:]/g, '').replace(/\s+/g, '.');
+			input = input.replace(type, formattedValue);
 		}
 	}
 	return input.split(path.sep).map((a) => Helper.cleanupFilename(a));

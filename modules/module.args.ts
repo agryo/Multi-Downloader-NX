@@ -14,9 +14,21 @@ const groups = {
 	gui: 'GUI:'
 };
 
-export type AvailableFilenameVars = 'title' | 'episode' | 'showTitle' | 'seriesTitle' | 'season' | 'width' | 'height' | 'service';
+export type AvailableFilenameVars = 'title' | 'episode' | 'showTitle' | 'seriesTitle' | 'season' | 'width' | 'height' | 'service' | 'audioCodec' | 'videoCodec' | 'releaseTag';
 
-const availableFilenameVars: AvailableFilenameVars[] = ['title', 'episode', 'showTitle', 'seriesTitle', 'season', 'width', 'height', 'service'];
+const availableFilenameVars: AvailableFilenameVars[] = [
+	'title',
+	'episode',
+	'showTitle',
+	'seriesTitle',
+	'season',
+	'width',
+	'height',
+	'service',
+	'audioCodec',
+	'videoCodec',
+	'releaseTag'
+];
 
 export type AvailableMuxer = 'ffmpeg' | 'mkvmerge';
 export const muxer: AvailableMuxer[] = ['ffmpeg', 'mkvmerge'];
@@ -896,6 +908,18 @@ const args: TAppArg<boolean | number | string | unknown[]>[] = [
 		usage: '"${toOverride}=\'${value}\'"',
 		default: {
 			default: []
+		}
+	},
+	{
+		name: 'releaseTag',
+		group: 'fileName',
+		describe: 'Set the release tag for the filename',
+		docDescribe: true,
+		service: ['all'],
+		type: 'string',
+		usage: '${tag}',
+		default: {
+			default: 'S74Ll10n'
 		}
 	},
 	{
